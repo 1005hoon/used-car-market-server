@@ -2,6 +2,9 @@
 /dist
 /node_modules
 
+# Dev Data
+db.sqlite
+
 # Logs
 logs
 *.log
