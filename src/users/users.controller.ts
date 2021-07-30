@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, Session, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, Session } from '@nestjs/common';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
+import { CurrentUser } from './decorators/current-user.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
+import { User } from './user.entity';
 import { UsersService } from './users.service';
 
 @Controller('auth')
@@ -15,8 +17,8 @@ export class UsersController {
   ) {}
 
   @Get('/current')
-  getCurrentUser(@Session() session: any) {
-    return this.usersService.findOne(session.userId);
+  getCurrentUser(@CurrentUser() user: User) {
+    return user;
   }
 
   @Get('/:id')
@@ -49,7 +51,7 @@ export class UsersController {
   signOut(@Session() session: any) {
     session.userId = null;
   }
-  
+
   @Post('/signin')
   async signinUser(
     @Body() body: CreateUserDto,
