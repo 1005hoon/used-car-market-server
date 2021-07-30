@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, Session, UseInterceptors } from '@nestjs/common';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,6 +14,10 @@ export class UsersController {
     private authsService: AuthService
   ) {}
 
+  @Get('/current')
+  getCurrentUser(@Session() session: any) {
+    return this.usersService.findOne(session.userId);
+  }
 
   @Get('/:id')
   async getUserById(@Param('id') id: string) {
@@ -32,13 +36,28 @@ export class UsersController {
   }
 
   @Post("/signup")
-  createUser(@Body() createUserDto: CreateUserDto) {
-    return this.authsService.signup(createUserDto.email, createUserDto.password);
+  async createUser(
+    @Body() createUserDto: CreateUserDto, 
+    @Session() session: any
+  ) {
+    const user = await this.authsService.signup(createUserDto.email, createUserDto.password);
+    session.userId = user.id;
+    return user;
   }
 
+  @Post('/signout')
+  signOut(@Session() session: any) {
+    session.userId = null;
+  }
+  
   @Post('/signin')
-  signinUser(@Body() body: CreateUserDto) {
-    return this.authsService.signin(body.email, body.password);
+  async signinUser(
+    @Body() body: CreateUserDto,
+    @Session() session: any
+  ) {
+    const user = await this.authsService.signin(body.email, body.password);
+    session.userId = user.id;
+    return user;
   }
 
   @Patch('/:id')
