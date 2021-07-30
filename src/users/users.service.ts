@@ -10,8 +10,42 @@ export class UsersService {
     private usersRepository: Repository<User>
   ) {}
 
+  find(email: string) {
+    if (!email) {
+      return this.usersRepository.find();
+    }
+    return this.usersRepository.find({ email });
+  }
+
+
+  findOne(id: number) {
+    return this.usersRepository.findOne(id);
+  }
+
+
   create(email: string, password: string) {
     const user = this.usersRepository.create({ email, password });
-    return this.usersRepository.save(user)
+    return this.usersRepository.save(user);
+  }
+
+  async update(id: number, attributes: Partial<User>) {
+    const user = await this.findOne(id);
+
+    if(!user) {
+      throw new Error('User not found');
+    }
+
+    Object.assign(user, attributes);
+    return this.usersRepository.save(user);
+  }
+
+  async remove(id: number) {
+    const user = await this.findOne(id)
+    
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return this.usersRepository.remove(user);
   }
 }
