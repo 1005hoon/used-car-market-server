@@ -5,6 +5,8 @@
 # dev data
 db.sqlite
 
+# dev env
+.env.*
 # http request tests
 */*/requests.http
 
