@@ -19,5 +19,6 @@ export class SerializeInterceptor implements NestInterceptor {
 }
 
 export function Serialize(dto: ClassConstructor) {
-  return UseInterceptors(new SerializeInterceptor(dto));
+  const result =  UseInterceptors(new SerializeInterceptor(dto));
+  return result
 }

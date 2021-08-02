@@ -3,7 +3,7 @@
 /node_modules
 
 # dev data
-dev.sqlite
+*.sqlite
 
 # dev env
 .env.*
