@@ -3,10 +3,11 @@
 /node_modules
 
 # dev data
-db.sqlite
+*.sqlite
 
 # dev env
 .env.*
+
 # http request tests
 */*/requests.http
 
